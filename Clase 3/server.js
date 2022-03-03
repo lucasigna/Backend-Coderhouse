@@ -63,25 +63,9 @@ class App {
         content.getAll(res)
     });
 
-    this.app.post("/producto", (req, res) => {
-        // Crea un producto
-        const {title,price,thumbnail} = req.body
-        console.log(req.body);
-        content.save({
-            title: title,
-            price: price,
-            thumbnail: thumbnail
-        })
-        res.send({
-            title: title,
-            price: price,
-            thumbnail: thumbnail,
-            message: "Perfecto!"
-        });
-    });
-    this.app.get("/producto/:id", async(req, res) => {
+    this.app.get("/productoRandom", async(req, res) => {
         // Obtiene un producto
-        const {id} = req.params
+        const id = Math.floor(Math.random() * (3 + 1 - 1)) + 1;
         content.getById(parseInt(id),res)
         
     });
