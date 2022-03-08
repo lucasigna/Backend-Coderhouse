@@ -25,8 +25,21 @@ class Database {
         for (const ob of this.db) {
             if(ob.id == id) {
                 const i = this.db.indexOf(ob)
+                if(newData.title === undefined) {
+                    newData.title = ob.title
+                }
+                if(newData.price === undefined) {
+                    newData.price = ob.price
+                }
+                if(newData.thumbnail === undefined) {
+                    newData.thumbnail = ob.thumbnail
+                }
                 this.db[i] = newData
                 return {
+                    id: id,
+                    title: newData.title,
+                    price: newData.price,
+                    thumbnail: newData.thumbnail,
                     message: "¡Producto actualizado!"
                 }
             }

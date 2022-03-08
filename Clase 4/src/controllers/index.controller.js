@@ -31,6 +31,9 @@ controller.updateProduct = (req, res) => {
 
     const { id } = req.params
     const {title,price,thumbnail} = req.body
+    console.log(title);
+    console.log(price);
+    console.log(thumbnail);
     const resp = db.updateById(
         id,
         {
