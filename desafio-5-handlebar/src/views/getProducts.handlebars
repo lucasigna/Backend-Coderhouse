@@ -1,0 +1,23 @@
+<h1>Productos</h1>
+{{#if productosList}}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Foto</th>
+        </tr>
+        {{#each productosList}}
+            <tr>
+                <td>{{this.id}}</td>
+                <td>{{this.title}}</td>
+                <td>$ {{this.price}}</td>
+                <td><img height="100" src="{{this.thumbnail}}"></td>
+            </tr>
+        {{/each}}
+    </table>
+{{ else }}
+    <h2>No se encontraron productos</h2>
+{{/if}}
+
+<a href="/api/productoForm">Agregar un producto</a>
