@@ -7,17 +7,20 @@ head
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
 body
     h1 Productos
-    table.table.table-striped 
-                tr 
-                    th Id 
-                    th Nombre 
-                    th Precio
-                    th Foto 
-                each prod in productosList 
+    if productosList
+        table.table.table-striped 
                     tr 
-                        td= prod.id 
-                        td= prod.title 
-                        td= prod.price
-                        td
-                            img(src=prod.thumbnail)
+                        th Id 
+                        th Nombre 
+                        th Precio
+                        th Foto 
+                    each prod in productosList 
+                        tr 
+                            td= prod.id 
+                            td= prod.title 
+                            td= prod.price
+                            td
+                                img(src=prod.thumbnail)
+    else 
+        h2 No hay productos guardados
     a(href="/api/productoForm") Agregar un producto
