@@ -7,7 +7,7 @@ class App {
         this.port = port;
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended: true}))
-        this.app.set('views','./views')
+        this.app.set('views','./src/views')
         this.app.set('view engine', 'pug')
     }
     listen() {

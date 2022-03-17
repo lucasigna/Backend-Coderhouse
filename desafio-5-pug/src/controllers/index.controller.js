@@ -4,7 +4,12 @@ const db = require("../data/data")
 
 controller.getProducts = (req, res) => {
     const resp = db.getAll()
-    res.json(resp)
+    res.render('getProducts.pug',{productosList: resp})
+}
+
+controller.getProductForm = (req, res) => {
+    const resp = db.getAll()
+    res.render('postProduct.pug')
 }
 
 controller.getProductById = (req, res) => {
@@ -19,12 +24,7 @@ controller.postProduct = (req, res) => {
         price: price,
         thumbnail: thumbnail
     })
-    res.json({
-        title: title,
-        price: price,
-        thumbnail: thumbnail,
-        message: "¡Producto agregado!"
-    });
+    controller.getProducts(req, res)
 }
 
 controller.updateProduct = (req, res) => {

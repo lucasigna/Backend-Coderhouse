@@ -1,0 +1,18 @@
+doctype 5
+html(lang="es")
+head 
+    title Desafío 5 - PUG
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+body
+    h1 Agregar un producto 
+    form(action="/api/productos" enctype="application/x-www-form-urlencoded" method="post") 
+        label(for="title") Nombre
+        input(type="text" id="title" name="title")
+        label(for="price") Precio
+        input(type="number" id="price" name="price")
+        label(for="thumbnail") URL Foto
+        input(type="text" id="thumbnail" name="thumbnail")
+        button(type="submit") Enviar
+    a(href="/api/productos") Ver lista de productos cargados
