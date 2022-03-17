@@ -8,7 +8,6 @@ controller.getProducts = (req, res) => {
 }
 
 controller.getProductForm = (req, res) => {
-    const resp = db.getAll()
     res.render('postProduct.handlebars')
 }
 
