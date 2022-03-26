@@ -1,11 +1,13 @@
 const controller = {}
 
 const db = require("../data/data")
+const messages = require("../data/messages")
 
 controller.getProducts = (req, res) => {
     const resp = db.getAll()
-    res.render('getProducts.handlebars',{productosList: resp})
+    res.json(resp)
 }
+
 
 controller.getProductForm = (req, res) => {
     res.render('postProduct.handlebars')
@@ -18,21 +20,18 @@ controller.getProductById = (req, res) => {
 
 controller.postProduct = (req, res) => {
     const {title,price,thumbnail} = req.body
-    db.save({
+    const prod = db.save({
         title: title,
         price: price,
         thumbnail: thumbnail
     })
-    controller.getProducts(req, res)
+    res.json(prod)
 }
 
 controller.updateProduct = (req, res) => {
-
+    
     const { id } = req.params
     const {title,price,thumbnail} = req.body
-    console.log(title);
-    console.log(price);
-    console.log(thumbnail);
     const resp = db.updateById(
         id,
         {
@@ -49,6 +48,21 @@ controller.updateProduct = (req, res) => {
 controller.deleteProduct = (req, res) => {
     const resp = db.deleteById(req.params.id)
     res.json(resp)
+}
+
+controller.getMessages = async (req, res) => {
+    const resp = await messages.getAll()
+    res.json(resp)
+}
+
+controller.postMessage = async(req, res) => {
+    const {mail,message} = req.body
+    const msg = await messages.save({
+        mail: mail,
+        timestamp: new Date().getTime(),
+        message: message
+    })
+    res.json(msg)
 }
 
 module.exports = controller

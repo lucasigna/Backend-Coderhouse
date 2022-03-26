@@ -11,6 +11,7 @@ class Database {
             product['id'] = 1;
         }
         this.db.push(product);
+        return product
     }
 
     getById(id){

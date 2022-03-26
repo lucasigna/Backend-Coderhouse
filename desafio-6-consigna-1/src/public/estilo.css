@@ -1,0 +1,35 @@
+#productList {
+    margin: 10px;
+    background-color: rgb(202, 202, 202);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#productList div {
+    display: flex;
+    flex-direction: row;
+}
+
+#productList div p {
+    width: 10vw;
+    margin: 10px;
+    background-color: rgb(233, 233, 233);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#chatList div {
+    display: flex;
+    margin: 10px;
+    background-color: rgb(233, 233, 233);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#chatList div p{
+    margin: 0 5px;
+}
+
+#chatList div p:nth-child(2){
+    margin-right: 15px;
+}
