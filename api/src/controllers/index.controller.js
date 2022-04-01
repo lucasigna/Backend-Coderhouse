@@ -18,37 +18,53 @@ controller.getProductById = (req, res) => {
 
 // Para incorporar productos al listado (disponible para administradores)
 controller.postProduct = (req, res) => {
-    const {title,price,thumbnail} = req.body
-    const prod = db.save({
-        title: title,
-        price: price,
-        thumbnail: thumbnail
-    })
-    res.json(prod)
+
+    if(process.env.ADMIN){
+        const {title,price,thumbnail} = req.body
+        const prod = db.save({
+            title: title,
+            price: price,
+            thumbnail: thumbnail
+        })
+        res.json(prod)
+    } else {
+        res.json({error: "Se requieren permisos de admin"})
+    }
+
 }
 
 // Actualiza un producto por su id (disponible para administradores)
 controller.updateProduct = (req, res) => {
     
-    const { id } = req.params
-    const {title,price,thumbnail} = req.body
-    const resp = db.updateById(
-        id,
-        {
-            id: id,
-            title: title,
-            price: price,
-            thumbnail: thumbnail
-        }
-    )
-    res.json(resp);
+    if(process.env.ADMIN){
+        const { id } = req.params
+        const {title,price,thumbnail} = req.body
+        const resp = db.updateById(
+            id,
+            {
+                id: id,
+                title: title,
+                price: price,
+                thumbnail: thumbnail
+            }
+        )
+        res.json(resp);
+    } else {
+        res.json({error: "Se requieren permisos de admin"})
+    }
 
 }
 
 // Borra un producto por su id (disponible para administradores)
 controller.deleteProduct = (req, res) => {
-    const resp = db.deleteById(req.params.id)
-    res.json(resp)
+
+    if(process.env.ADMIN){
+        const resp = db.deleteById(req.params.id)
+        res.json(resp)
+    } else {
+        res.json({error: "Se requieren permisos de admin"})
+    }
+    
 }
 
 //! Endpoints carrito
