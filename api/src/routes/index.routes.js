@@ -16,4 +16,8 @@ router.get('/api/carrito/:id/productos', controller.getProductsInCart)
 router.post('/api/carrito/:id/productos', controller.addProductToCart)
 router.delete('/api/carrito/:id/productos/:id_producto', controller.removeProductFromCart)
 
+router.get('*', (req, res) => {
+    res.status(404).send({error: 404, description: 'Ruta no implementada'})
+})
+
 module.exports = router;
