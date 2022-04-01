@@ -1,0 +1,11 @@
+@import './_variables.scss';
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: $fontGlobal;
+}
+
+body{
+    background-color: $colorFondoAzulado;
+}
