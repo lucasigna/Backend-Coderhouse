@@ -1,23 +1,25 @@
 const express = require("express")
+const routerProductos = express.Router()
+const routerCarrito = express.Router()
 const router = express.Router()
 const controller = require("../controllers/index.controller")
 
 //! Endpoints productos
-router.get('/api/productos', controller.getProducts)
-router.get('/api/productos/:id', controller.getProductById)
-router.post('/api/productos', controller.postProduct) // ADMIN
-router.put('/api/productos/:id', controller.updateProduct) // ADMIN
-router.delete('/api/productos/:id', controller.deleteProduct) // ADMIN
+routerProductos.get('/', controller.getProducts)
+routerProductos.get('/:id', controller.getProductById)
+routerProductos.post('/', controller.postProduct) // ADMIN
+routerProductos.put('/:id', controller.updateProduct) // ADMIN
+routerProductos.delete('/:id', controller.deleteProduct) // ADMIN
 
 //! Endpoints carrito
-router.post('/api/carrito', controller.createCart)
-router.delete('/api/carrito/:id', controller.deleteCart)
-router.get('/api/carrito/:id/productos', controller.getProductsInCart)
-router.post('/api/carrito/:id/productos', controller.addProductToCart)
-router.delete('/api/carrito/:id/productos/:id_producto', controller.removeProductFromCart)
+routerCarrito.post('/', controller.createCart)
+routerCarrito.delete('/:id', controller.deleteCart)
+routerCarrito.get('/:id/productos', controller.getProductsInCart)
+routerCarrito.post('/:id/productos', controller.addProductToCart)
+routerCarrito.delete('/:id/productos/:id_producto', controller.removeProductFromCart)
 
 router.get('*', (req, res) => {
     res.status(404).send({error: 404, description: 'Ruta no implementada'})
 })
 
-module.exports = router;
+module.exports = {router,routerProductos,routerCarrito};
