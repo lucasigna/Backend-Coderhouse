@@ -3,8 +3,8 @@ const controller = {}
 const db = require("../data/data")
 const messages = require("../data/messages")
 
-controller.getProducts = (req, res) => {
-    const resp = db.getAll()
+controller.getProducts = async (req, res) => {
+    const resp = await db.getAll()
     res.json(resp)
 }
 
@@ -13,14 +13,14 @@ controller.getProductForm = (req, res) => {
     res.render('postProduct.handlebars')
 }
 
-controller.getProductById = (req, res) => {
-    const resp = db.getById(req.params.id)
+controller.getProductById = async (req, res) => {
+    const resp = await db.getById(req.params.id)
     res.json(resp)
 }
 
-controller.postProduct = (req, res) => {
+controller.postProduct = async (req, res) => {
     const {title,price,thumbnail} = req.body
-    const prod = db.save({
+    const prod = await db.save({
         title: title,
         price: price,
         thumbnail: thumbnail
@@ -28,11 +28,11 @@ controller.postProduct = (req, res) => {
     res.json(prod)
 }
 
-controller.updateProduct = (req, res) => {
+controller.updateProduct = async (req, res) => {
     
     const { id } = req.params
     const {title,price,thumbnail} = req.body
-    const resp = db.updateById(
+    const resp = await db.updateById(
         id,
         {
             id: id,
@@ -45,8 +45,8 @@ controller.updateProduct = (req, res) => {
 
 }
 
-controller.deleteProduct = (req, res) => {
-    const resp = db.deleteById(req.params.id)
+controller.deleteProduct = async (req, res) => {
+    const resp = await db.deleteById(req.params.id)
     res.json(resp)
 }
 
