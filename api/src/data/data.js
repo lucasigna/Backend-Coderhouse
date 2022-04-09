@@ -27,21 +27,37 @@ class Database {
         for (const ob of this.db) {
             if(ob.id == id) {
                 const i = this.db.indexOf(ob)
-                if(newData.title === undefined) {
-                    newData.title = ob.title
+                if(newData.name === undefined) {
+                    newData.name = ob.name
+                }
+                if(newData.timestamp === undefined) {
+                    newData.timestamp = ob.timestamp
+                }
+                if(newData.description === undefined) {
+                    newData.description = ob.description
                 }
                 if(newData.price === undefined) {
                     newData.price = ob.price
                 }
-                if(newData.thumbnail === undefined) {
-                    newData.thumbnail = ob.thumbnail
+                if(newData.code === undefined) {
+                    newData.code = ob.code
+                }
+                if(newData.photo === undefined) {
+                    newData.photo = ob.photo
+                }
+                if(newData.stock === undefined) {
+                    newData.stock = ob.stock
                 }
                 this.db[i] = newData
                 return {
                     id: id,
-                    title: newData.title,
+                    timestamp: newData.timestamp,
+                    name: newData.name,
+                    description: newData.description,
+                    code: newData.code,
+                    photo: newData.photo,
                     price: newData.price,
-                    thumbnail: newData.thumbnail,
+                    stock: newData.stock,
                     message: "¡Producto actualizado!"
                 }
             }
