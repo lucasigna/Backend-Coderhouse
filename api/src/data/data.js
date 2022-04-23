@@ -1,93 +1,93 @@
-class Database {
+require('dotenv').config()
+const ProductosModel = require('../models/productos.modules')
+const CarritosModel = require('../models/carritos.modules')
+const mongoose = require('mongoose')
 
-    constructor(){
-        this.db = []
+mongoose.connect(process.env.MONGO_URI, (error) => { 
+    if(error) {
+        console.log("Error: ", error)
     }
+    console.log('Conectado a MongoDB!') 
+})
 
-    save(product){
-        if(this.db.length > 0){
-            product['id'] = this.db[this.db.length - 1].id + 1;
-        } else {
-            product['id'] = 1;
-        }
-        this.db.push(product);
-        return product
-    }
 
-    getById(id){
-        for (const ob of this.db) {
-            if(ob.id == id) {
-                return ob
+class Productos {
+
+    constructor(){}
+
+    async save(product){
+        try{
+            product['id'] = makeId();
+            const response = await ProductosModel.create([product])
+            if(response) {
+                return {producto: response, message: "Producto guardado"}
             }
+            return {Error: 'Producto no cargado'}
+        } catch(err) {
+            return {error: err.message}
         }
-        return {error: 'Producto no encontrado'}
     }
 
-    updateById(id,newData){
-        for (const ob of this.db) {
-            if(ob.id == id) {
-                const i = this.db.indexOf(ob)
-                if(newData.name === undefined) {
-                    newData.name = ob.name
-                }
-                if(newData.timestamp === undefined) {
-                    newData.timestamp = ob.timestamp
-                }
-                if(newData.description === undefined) {
-                    newData.description = ob.description
-                }
-                if(newData.price === undefined) {
-                    newData.price = ob.price
-                }
-                if(newData.code === undefined) {
-                    newData.code = ob.code
-                }
-                if(newData.photo === undefined) {
-                    newData.photo = ob.photo
-                }
-                if(newData.stock === undefined) {
-                    newData.stock = ob.stock
-                }
-                this.db[i] = newData
-                return {
-                    id: id,
-                    timestamp: newData.timestamp,
-                    name: newData.name,
-                    description: newData.description,
-                    code: newData.code,
-                    photo: newData.photo,
-                    price: newData.price,
-                    stock: newData.stock,
-                    message: "¡Producto actualizado!"
-                }
-            }
+    async getById(id) {
+        const response = await ProductosModel.findOne({ id: id })
+        if(response) {
+            return response
         }
+        return {Error: 'Producto no encontrado'}
+    }
+
+    async updateById(id,newData){
+        const actualProd = await ProductosModel.findOne({ id: id })
+        if(newData.name === undefined) {
+            newData.name = actualProd.name
+        }
+        if(newData.timestamp === undefined) {
+            newData.timestamp = actualProd.timestamp
+        }
+        if(newData.description === undefined) {
+            newData.description = actualProd.description
+        }
+        if(newData.price === undefined) {
+            newData.price = actualProd.price
+        }
+        if(newData.code === undefined) {
+            newData.code = actualProd.code
+        }
+        if(newData.photo === undefined) {
+            newData.photo = actualProd.photo
+        }
+        if(newData.stock === undefined) {
+            newData.stock = actualProd.stock
+        }
+        const updatedProd = await ProductosModel.findOneAndUpdate({ id: id }, newData)
+        if(updatedProd){
+            return {producto: newData, message: "Producto actualizado"}
+        }
+        
         return {
             error: "¡Producto no encontrado!"
         }
     }
 
-    getAll(){
-        return this.db
+    async getAll(){
+        try{
+            const response = await ProductosModel.find()
+            if(response){
+                return response
+            }
+        } catch(err){
+            return {error: err.message}
+        }
     }
     
-    deleteById(id){
-        let collection = []
-        let length = 0
-        let isDeleted = false
-        for (const ob of this.db) {
-            if(ob.id != id) {
-                collection.push(ob)
-                length++
-            }
+    async deleteById(id){
+
+        const response = await ProductosModel.findOneAndDelete({ id: id })
+        if (response) {
+            return {producto: response, message: "Producto eliminado"}
         }
-        length != this.db.length ? isDeleted = true : isDeleted = false
-        this.db = collection
-        if (isDeleted) {
-            return {message: "Producto eliminado"}
-        } else {
-            return {error: "Producto no encontrado"}
-        }
+        return {error: "Producto no encontrado"}
+
     }
 
 }
@@ -104,68 +104,95 @@ const makeId = () => {
 
 class Carts {
 
-    constructor(){
-        this.carts = []
-    }
+    constructor(){}
 
-    createCart(){
+    async createCart(){
         const id = makeId()
         const cart = {
             id: id,
             timestamp: new Date().getTime(),
             products: []
         }
-        this.carts.push(cart)
+        const response = await CarritosModel.create([cart])
         return {success: "Carrito creado", id: id}
     }
 
-    deleteCart(id){
-        for (const cart of this.carts) {
-            if(cart.id == id){
-                this.carts.splice(this.carts.indexOf(cart),1) // Elimino el carrito
-                return {success: "Carrito eliminado"}
-            }
+    async deleteCart(id){
+        const response = await CarritosModel.findOneAndDelete({ id: id })
+        if (response) {
+            return {producto: response, message: "Carrito eliminado"}
         }
         return {error: "Carrito no encontrado, no se pudo eliminar"}
     }
 
-    getProductsInCart(id){
-        for (const cart of this.carts) {
-            if(cart.id == id){
-                return cart.products
-            }
+    async getProductsInCart(id){
+        const response = await CarritosModel.findOne({ id: id })
+        if(response) {
+            return response.products
         }
-        return {error: 'Carrito no encontrado'}
+        return {Error: 'Carrito no encontrado'}
     }
 
-    addProductToCart(id, product){
-        for (const cart of this.carts) {
-            if(cart.id == id){
-                cart.products.push(product)
-                return {success: "Producto agregado"}
-            }
+    async addProductToCart(id, product){
+        const response = await CarritosModel.findOne({ id: id })
+        if(response) {
+            response.products.push(product)
+        } else {
+            return {Error: 'Carrito no encontrado'}
         }
-        return {error: "Carrito no encontrado, no se cargó el producto"}
+        const newData = {
+            id: id,
+            timestamp: response.timestamp,
+            products: response.products
+        }
+        const updatedCart = await CarritosModel.findOneAndUpdate({ id: id }, newData)
+        if(updatedCart){
+            return {carrito: newData, message: "Producto agregado"}
+        }
+        
+        return {
+            error: "Producto no agregado!"
+        }
     }
 
-    removeProductFromCart(id, productId){
-        for (const cart of this.carts) {
-            if(cart.id == id){
-                for (const product of cart.products) {
-                    if(product.id == productId){
-                        cart.products.splice(cart.products.indexOf(cart),1) // Elimino el producto
-                        return {success: "Producto eliminado"}
-                    }
+    async removeProductFromCart(id, productId){
+        let productos = []
+        const response = await CarritosModel.findOne({ id: id })
+        if(response) {
+            let wasFounded = false
+            for (const product of response.products) {
+                if(product.id != productId){
+                    productos.push(product)
                 }
+                if(product.id == productId){
+                    wasFounded = true
+                }
+            }
+            if(!wasFounded) {
                 return {error: "Producto no encontrado"}
             }
+        
+        } else {
+            return {Error: 'Carrito no encontrado'}
         }
-        return {error: "Carrito no encontrado"}
+        const newData = {
+            id: id,
+            timestamp: response.timestamp,
+            products: productos
+        }
+        const updatedCart = await CarritosModel.findOneAndUpdate({ id: id }, newData)
+        if(updatedCart){
+            return {carrito: newData, message: "Producto eliminado"}
+        }
+        
+        return {
+            error: "Producto no eliminado!"
+        }
     }
 
 }
 
-const db = new Database()
+const db = new Productos()
 const carts = new Carts()
 
 module.exports = {db,carts}
