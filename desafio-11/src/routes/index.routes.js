@@ -4,6 +4,7 @@ const controller = require("../controllers/index.controller")
 
 router.get('/',controller.getProducts)
 router.get('/api/productos',controller.getProducts)
+router.get('/api/productos-test',controller.getProductsTest)
 router.get('/api/productos/:id',controller.getProductById)
 router.get('/api/productoForm',controller.getProductForm)
 router.post('/api/productos',controller.postProduct)

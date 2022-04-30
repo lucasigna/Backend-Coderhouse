@@ -1,4 +1,5 @@
 const controller = {}
+const generateProduct = require('./../utils/product.utils')
 
 const db = require("../data/data")
 const messages = require("../data/messages")
@@ -8,6 +9,13 @@ controller.getProducts = async (req, res) => {
     res.json(resp)
 }
 
+controller.getProductsTest = async (req, res) => {
+    const fakeProducts = []
+    for (let i = 0; i < 5; i++) {
+        fakeProducts.push(generateProduct())
+    }
+    res.json(fakeProducts)
+}
 
 controller.getProductForm = (req, res) => {
     res.render('postProduct.handlebars')
@@ -56,11 +64,17 @@ controller.getMessages = async (req, res) => {
 }
 
 controller.postMessage = async(req, res) => {
-    const {mail,message} = req.body
+    const {mail,nombre,apellido,edad,alias,avatar,message} = req.body
     const msg = await messages.save({
-        mail: mail,
-        timestamp: new Date().getTime(),
-        message: message
+        author: {
+            id: mail, 
+            nombre: nombre, 
+            apellido: apellido, 
+            edad: edad, 
+            alias: alias,
+            avatar: avatar
+        },
+        text: message
     })
     res.json(msg)
 }

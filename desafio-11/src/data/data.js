@@ -15,8 +15,7 @@ const knexMariaDB = _knex(config);
 
 const createTable = async(knex,table) => {
     try {
-      const exist = await knex.schema.hasTable(table);
-      console.log(exist);
+      const exist = await knex.schema.hasTable(table)
       if (!exist) {
             await knex.schema.createTable(table, (table) => {
             table.increments("id").primary().notNullable(),

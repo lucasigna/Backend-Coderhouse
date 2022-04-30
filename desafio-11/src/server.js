@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const routes = require('./routes/index.routes')
 const http = require('http')
@@ -17,11 +18,6 @@ io.on('connection', (socket) => {
     
     socket.on('disconnect', () => {
         console.log('Usuario desconectado');
-    })
-
-    socket.on('newProduct', (data) => {
-        console.log(data);
-        io.sockets.emit('newProduct', data)
     })
 
     socket.on('newMessage', (data) => {

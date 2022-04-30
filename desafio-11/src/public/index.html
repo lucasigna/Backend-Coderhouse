@@ -9,16 +9,7 @@
     <title>Desafío 6</title>
 </head>
 <body>
-    <h1>Formulario de productos</h1>
-    <form id="form">
-        <label for="title">Título</label>
-        <input required type="text" id="title" name="title">
-        <label for="price">Precio</label>
-        <input required type="number" id="price" name="price">
-        <label for="thumbnail">URL Foto</label>
-        <input required type="text" id="thumbnail" name="thumbnail">
-        <input type="submit" value="Subir">
-    </form>
+    <h1>Lista de productos</h1>
     <div id="productList">
         <div>
             <p>Id</p>
@@ -38,12 +29,11 @@
     <script src="../data/messages"></script>
     <script>
         const socket = io();
-        const form = document.getElementById("form")
         const chatList = document.getElementById("chatList")
         const formChat = document.getElementById("formChat")
 
         window.onload = () => {
-            fetch('http://localhost:8080/api/productos')
+            fetch('http://localhost:8080/api/productos-test')
             .then( resp => resp.json() )
             .then( (data) => {
                 for (const prod of data) {
@@ -72,36 +62,6 @@
                 }
             })
         }
-
-        form.addEventListener("submit",(e) => {
-            e.preventDefault();
-            const title = document.getElementById("title").value
-            const price = document.getElementById("price").value
-            const thumbnail = document.getElementById("thumbnail").value
-
-            fetch('http://localhost:8080/api/productos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title, price, thumbnail })
-            })
-            .then( res => res.json())
-            .then( (data) => {
-                socket.emit('newProduct', data)
-            })
-        })
-
-        socket.on('newProduct', (data) => {
-            const elem = document.createElement('div')
-                    elem.innerHTML = `
-                            <p>${data.id}</p>
-                            <p>${data.title}</p>
-                            <p>${data.price}</p>
-                            <p>${data.thumbnail}</p>
-                    `
-                    productList.appendChild(elem)
-        })
 
         formChat.addEventListener('submit', (e) => {
             e.preventDefault()
