@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./estilo.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Desafío 12</title>
+</head>
+<body>
+    <div id="index">
+        <h3 id="saludo">Hola</h3>
+        <button id="logout">Cerrar sesión</button>
+        <h1>Lista de productos</h1>
+        <div id="productList">
+            <div>
+                <p>Id</p>
+                <p>Título</p>
+                <p>Precio</p>
+                <p>URL Foto</p>
+            </div>
+        </div>
+        <form id="formChat">
+            <input required type="text" id="mail" placeholder="Correo">
+            <div id="chatList">
+                
+            </div>
+            <input required type="text" id="message" placeholder="Escribe un mensaje">
+            <input type="submit" id="send" value="Enviar mensaje">
+        </form>
+    </div>
+    <div id="login">
+        <h1>Login</h1>
+        <form id="formLogin">
+            <input required type="text" id="nombre" placeholder="Nombre">
+            <input type="submit" id="send" value="Iniciar sesión">
+        </form>
+    </div>
+    <script src="../data/messages"></script>
+    <script>
+        const socket = io();
+        const chatList = document.getElementById("chatList")
+        const formChat = document.getElementById("formChat")
+        const index = document.getElementById("index")
+        const login = document.getElementById("login")
+        const logout = document.getElementById("logout")
+        const formLogin = document.getElementById("formLogin")
+        const saludo = document.getElementById("saludo")
+
+       
+        const indexFlow = () => {
+
+            fetch('http://localhost:8080/api/productos-test')
+            .then( resp => resp.json() )
+            .then( (data) => {
+                for (const prod of data) {
+                    const elem = document.createElement('div')
+                    elem.innerHTML = `
+                            <p>${prod.id}</p>
+                            <p>${prod.title}</p>
+                            <p>${prod.price}</p>
+                            <p>${prod.thumbnail}</p>
+                    `
+                    productList.appendChild(elem)
+                }
+            })
+            fetch('http://localhost:8080/api/mensajes')
+            .then( resp => resp.json() )
+            .then( (data) => {
+                for (const msg of data) {
+                    const timestamp = new Date(msg.timestamp)
+                    const elem = document.createElement('div')
+                    elem.innerHTML = `
+                            <p>${msg.mail}:</p>
+                            <p>${msg.message}</p>
+                            <p>${timestamp.getDate()}/${timestamp.getMonth()+1}/${timestamp.getFullYear()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}</p>
+                    `
+                    chatList.appendChild(elem)
+                }
+            })
+
+        }
+
+        const loginFlow = () => {
+
+            formLogin.addEventListener('submit', (e) => {
+                e.preventDefault()
+                const nombre = document.getElementById("nombre").value
+
+                fetch('http://localhost:8080/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nombre: nombre })
+                })
+                .then( res => res.json())
+                .then( (data) => {
+                    console.log(data);
+                    index.style.display = 'initial'
+                    login.style.display = 'none'
+                    saludo.innerHTML = `¡Bienvenido ${nombre}!`
+                    indexFlow()
+                })
+            })
+
+        }
+
+        window.onload = () => {
+
+            fetch('http://localhost:8080/get_session_state')
+            .then( resp => resp.json() )
+            .then( (data) => {
+                console.log(data);
+
+                if(data.login) {
+                    // Sesión abierta
+                    index.style.display = 'initial'
+                    saludo.innerHTML = `¡Bienvenido ${data.user}!`
+                    indexFlow()
+                } else {
+                    // Sesión cerrada
+                    login.style.display = 'initial'
+                    loginFlow()
+                }
+                
+            })
+
+        }
+
+
+        formChat.addEventListener('submit', (e) => {
+            e.preventDefault()
+            const mail = document.getElementById("mail").value
+            const message = document.getElementById("message").value
+
+            fetch('http://localhost:8080/api/mensajes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mail, message })
+            })
+            .then( res => res.json())
+            .then( (data) => {
+                socket.emit('newMessage', data)
+            })
+        })
+
+        socket.on('newMessage', (data) => {
+            const timestamp = new Date(data.timestamp)
+            const elem = document.createElement('div')
+                    elem.innerHTML = `
+                        <p>${data.mail}:</p>
+                        <p>${data.message}</p>
+                        <p>${timestamp.getDate()}/${timestamp.getMonth()+1}/${timestamp.getFullYear()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}</p>
+                    `
+                    chatList.appendChild(elem)
+        })
+
+        logout.addEventListener('click', (e) => {
+            e.preventDefault()
+            fetch('http://localhost:8080/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then( res => res.json())
+            .then( (data) => {
+                console.log(data);
+                login.style.display = 'initial'
+                index.style.display = 'none'
+                loginFlow()
+            })
+        })
+
+    </script>
+</body>
+</html>

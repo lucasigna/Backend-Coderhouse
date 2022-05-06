@@ -2,7 +2,6 @@ const express = require("express")
 const router = express.Router()
 const controller = require("../controllers/index.controller")
 
-router.get('/',controller.getProducts)
 router.get('/api/productos',controller.getProducts)
 router.get('/api/productos-test',controller.getProductsTest)
 router.get('/api/productos/:id',controller.getProductById)

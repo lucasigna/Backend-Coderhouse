@@ -33,3 +33,7 @@
 #chatList div p:nth-child(2){
     margin-right: 15px;
 }
+
+#index, #login{
+    display: none;
+}
