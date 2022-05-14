@@ -5,6 +5,8 @@ const http = require('http')
 const { Server } = require('socket.io')
 const session = require('express-session')
 const mongoStore = require('connect-mongo')
+import AuthRouter from "./routers/auth.router.js";
+import passport from "./utils/passport.util.js";
 
 const app = express();
 const PORT = 8080;
@@ -30,6 +32,9 @@ app.use(
     }),
 );
 app.use(routes)
+app.use(passport.initialize());
+app.use(passport.session());
+app.use("/", AuthRouter);
 const server  = http.createServer(app)
 const io = new Server(server)
 

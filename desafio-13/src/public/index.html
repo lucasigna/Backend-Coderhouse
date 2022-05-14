@@ -33,8 +33,17 @@
     <div id="login">
         <h1>Login</h1>
         <form id="formLogin">
-            <input required type="text" id="nombre" placeholder="Nombre">
+            <input required type="text" id="username" placeholder="Nombre">
+            <input required type="text" id="password" placeholder="Contraseña">
             <input type="submit" id="send" value="Iniciar sesión">
+        </form>
+    </div>
+    <div id="signup">
+        <h1>Registrarse</h1>
+        <form id="formSignup">
+            <input required type="text" id="username" placeholder="Nombre">
+            <input required type="text" id="password" placeholder="Contraseña">
+            <input type="submit" id="send" value="Registrar">
         </form>
     </div>
     <script src="../data/messages"></script>
@@ -44,8 +53,10 @@
         const formChat = document.getElementById("formChat")
         const index = document.getElementById("index")
         const login = document.getElementById("login")
+        const signup = document.getElementById("signup")
         const logout = document.getElementById("logout")
         const formLogin = document.getElementById("formLogin")
+        const formSignup = document.getElementById("formSignup")
         const saludo = document.getElementById("saludo")
 
        
@@ -86,21 +97,50 @@
 
             formLogin.addEventListener('submit', (e) => {
                 e.preventDefault()
-                const nombre = document.getElementById("nombre").value
+                const username = document.getElementById("username").value
+                const password = document.getElementById("password").value
 
                 fetch('http://localhost:8080/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ nombre: nombre })
+                    body: JSON.stringify({ userName: username, password: password })
                 })
                 .then( res => res.json())
                 .then( (data) => {
                     console.log(data);
                     index.style.display = 'initial'
                     login.style.display = 'none'
-                    saludo.innerHTML = `¡Bienvenido ${nombre}!`
+                    signup.style.display = 'none'
+                    saludo.innerHTML = `¡Bienvenido ${username}!`
+                    indexFlow()
+                })
+            })
+
+        }
+
+        const signupFlow = () => {
+
+            formSignup.addEventListener('submit', (e) => {
+                e.preventDefault()
+                const username = document.getElementById("username").value
+                const password = document.getElementById("password").value
+
+                fetch('http://localhost:8080/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userName: username, password: password })
+                })
+                .then( res => res.json())
+                .then( (data) => {
+                    console.log(data);
+                    index.style.display = 'initial'
+                    login.style.display = 'none'
+                    signup.style.display = 'none'
+                    saludo.innerHTML = `¡Bienvenido ${username}!`
                     indexFlow()
                 })
             })
